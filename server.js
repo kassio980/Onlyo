@@ -4,6 +4,7 @@ const S=require('./modules/seguranca'),hosp=require('./modules/hospedagemAuto'),
 const DONO=process.env.DONO_ID;
 
 app.use(helmet({contentSecurityPolicy:false,hsts:true}));
+app.get("/",(q,r)=>{if(q.headers.host?.includes("onlyo"))return r.redirect(301,"https://only-500v.onrender.com"+q.url);r.sendFile("public/index.html",{root:__dirname})});
 app.use(require('cors')());
 app.use(express.json());
 app.use((q,r,n)=>{r.locals.user_id=q.headers['x-user-id']||null;n()});
