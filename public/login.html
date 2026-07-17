@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><title>ONLY TECHNOLOGIES · LOGIN</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{min-height:100vh;background:#05070a radial-gradient(circle at 30% 20%,rgba(57,255,20,.15),transparent 55%),url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=1600') center/cover no-repeat fixed;color:#d6ffe0}
+.tela{display:grid;grid-template-columns:1fr 420px;min-height:100vh;align-items:center;padding:40px 60px}
+.logoarea h1{font-size:72px;font-weight:900;color:#fff;text-shadow:0 0 22px #39ff14aa}.logoarea h1 b{color:#39ff14}
+.bar{width:180px;height:6px;background:linear-gradient(90deg,#39ff14,#00ff88,#39ff14);box-shadow:0 0 20px #39ff14;margin:14px 0 22px;border-radius:99px}
+.grade{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:720px;margin-top:26px}
+.card{padding:14px 16px;border:1px solid #39ff1433;border-radius:10px;background:#0a1208cc;backdrop-filter:blur(6px)}
+.card h4{color:#39ff14;font-size:12px;letter-spacing:2px}.card h2{font-size:26px;margin-top:4px}
+.box{background:#0a1208cc;border:1px solid #39ff1444;border-radius:16px;padding:34px;backdrop-filter:blur(10px);box-shadow:0 0 40px #39ff1422,inset 0 0 30px #39ff1411}
+.tag{display:inline-block;padding:6px 12px;border:1px solid #39ff1455;border-radius:99px;color:#39ff14;font-size:12px;margin-bottom:18px}
+input{width:100%;padding:14px 14px 14px 40px;margin:10px 0;background:#070b06;border:1px solid #39ff1433;border-radius:10px;color:#fff;outline:none}
+input:focus{border-color:#39ff14;box-shadow:0 0 12px #39ff1466}
+.btn{width:100%;padding:14px;margin-top:10px;background:linear-gradient(90deg,#2bd30f,#39ff14);color:#050a04;font-weight:800;border:0;border-radius:10px;cursor:pointer;font-size:16px;box-shadow:0 6px 22px #39ff1455}
+.discord{background:#5865f2;color:#fff;box-shadow:none;margin-top:10px}
+@media(max-width:900px){.tela{grid-template-columns:1fr}}
+</style></head>
+<body><div class=tela>
+ <div class=logoarea>
+  <div style="width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,#39ff14,#0b2a00 70%);display:grid;place-items:center;font-size:80px;font-weight:900;color:#050a04;box-shadow:0 0 40px #39ff14;margin-bottom:14px">OT</div>
+  <h1>ONLY <b>TECHNOLOGIES</b></h1><div class=bar></div>
+  <h3 style=color:#b6ffc9>PAINEL DE CONTROLE</h3>
+  <p style=color:#9fd9a9;margin-top:8px>Gerencie, monitore e tenha total controle dos seus bots com segurança e eficiência.</p>
+  <div class=grade>
+   <div class=card><h4>🛡️</h4><h2>SEGURANÇA</h2><small>Avançada</small></div>
+   <div class=card><h4>📈</h4><h2>MONITORAMENTO</h2><small>Real time</small></div>
+   <div class=card><h4>🤖</h4><h2>CONTROLE</h2><small>De bots</small></div>
+   <div class=card><h4>⚡</h4><h2>DESEMPENHO</h2><small>Máximo</small></div>
+  </div>
+ </div>
+ <form id=f class=box onsubmit="return entrar(event)">
+  <div class=tag>🔒 ACESSO RESTRITO<br><small style=color:#8fdf9e>Área administrativa exclusiva</small></div>
+  <h2 style=font-size:28px>FAÇA LOGIN</h2>
+  <p style=color:#8fdf9e;font-size:13px;margin-bottom:18px>Entre com suas credenciais</p>
+  <div style=position:relative><span style=position:absolute;left:12px;top:22px;color:#39ff14>👤</span><input id=u value=ONLY></div>
+  <div style=position:relative><span style=position:absolute;left:12px;top:22px;color:#39ff14>🔒</span><input id=s type=password value=ONLY01></div>
+  <label style=display:flex;align-items:center;gap:8px;font-size:13px;color:#9fd9a9;margin-top:6px><input type=checkbox checked style=width:auto> Lembrar de mim <a style=color:#39ff14;margin-left:auto>Esqueceu sua senha?</a></label>
+  <button class=btn>ACESSAR PAINEL →</button>
+  <div style="text-align:center;color:#76b882;margin:12px 0;font-size:12px">OU</div>
+  <button type=button class="btn discord">🐛 ENTRAR COM DISCORD</button>
+  <div style="text-align:center;margin-top:18px;color:#39ff14aa;font-size:11px">🛡️ SISTEMA PROTEGIDO<br>© 2025 ONLY TECHNOLOGIES</div>
+ </form>
+</div>
+<script>
+async function entrar(e){e.preventDefault();
+ const j=await(await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({u:u.value,s:s.value})})).json();
+ if(j.ok){document.cookie='tk='+j.tk+';path=/';location.href='/'}else alert(j.m)
+}
+</script></body></html>

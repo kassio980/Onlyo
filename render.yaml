@@ -1,0 +1,1 @@
+services:- type:web,name:onlyo,env:node,buildCommand:npm ci,startCommand:npm start,plan:free,autoDeploy:true

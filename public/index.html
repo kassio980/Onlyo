@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><title>ONLY TECHNOLOGIES</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+:root{--v:#39ff14;--f:#0b1208;--f2:#0f180c}
+html,body,#app{height:100%;background:#050806;color:#dfffe6}
+#app{display:grid;grid-template-columns:240px 1fr}
+aside{background:linear-gradient(180deg,#070d05,#050806);border-right:1px solid #1a2e12;padding:18px 0;position:sticky;top:0;height:100vh}
+.menuitem{display:flex;align-items:center;gap:12px;padding:11px 18px;color:#9fd9a9;margin:3px 10px;border-radius:8px;cursor:pointer}
+.menuitem.ativo,.menuitem:hover{background:linear-gradient(90deg,#39ff1422,transparent);color:#39ff14;border-left:3px solid #39ff14}
+.logo{padding:10px 18px 20px;font-weight:900;font-size:20px;color:#fff}.logo b{color:#39ff14}
+main{padding:22px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:var(--f2);border:1px solid #1a2e12;border-radius:12px;padding:16px;position:relative}
+.card::after{content:'';position:absolute;inset:auto 0 -40% -40%;width:120px;height:120px;background:#39ff1422;border-radius:50%;filter:blur(30px)}
+.card h5{color:#8fdf9e;font-size:12px;letter-spacing:1.5px}
+.card h1{font-size:34px;margin-top:6px}.card .sub{color:#39ff14;font-size:12px;margin-top:4px}
+.icone{float:right;width:42px;height:42px;border-radius:10px;background:#39ff141a;color:#39ff14;display:grid;place-items:center;font-size:20px}
+.grafico,.tabela{background:var(--f2);border:1px solid #1a2e12;border-radius:12px;padding:16px;margin-top:14px}
+.linha{display:grid;grid-template-columns:1.5fr 1fr;gap:14px}
+canvas{width:100%!important;height:240px!important}
+.bot{display:inline-flex;gap:6px;padding:6px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+.btn-on{background:#39ff14;color:#050a04}.btn-off{background:#ff3b3b;color:#fff}.btn-rst{background:#2563eb;color:#fff}
+.logline{padding:8px 10px;border-left:3px solid #39ff14;background:#070d05;margin:4px 0;border-radius:4px;font-family:monospace;font-size:12.5px}
+.log_erro{border-color:#ff3b3b;color:#ff9e9e}.log_aviso{border-color:#eab308;color:#ffd966}
+.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:#39ff14;box-shadow:0 0 8px #39ff14;animation:p 1.4s infinite}@keyframes p{50%{opacity:.3}}
+.off .status-dot{background:#ff3b3b;box-shadow:none;animation:none}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head>
+<body><div id=app>
+ <aside>
+  <div class=logo>ONLY <b>TECHNOLOGIES</b><div style=font-size:10px;color:#8fdf9e>PAINEL DE CONTROLE</div></div>
+  <div class="menuitem ativo">🏠 Início</div><div class=menuitem>📊 Dashboard</div><div class=menuitem>🤖 Bots</div>
+  <div class=menuitem>🖥️ Servidores</div><div class=menuitem>👥 Usuários</div><div class=menuitem>📜 Logs</div>
+  <div class=menuitem>⚙️ Configurações</div><div class=menuitem>💾 Backups</div><div class=menuitem>🔔 Notificações</div>
+  <div class=menuitem>❓ Suporte</div><div class=menuitem>📘 Documentação</div>
+  <div style="position:absolute;bottom:14px;left:14px;right:14px;background:#0f180c;border:1px solid #1a2e12;border-radius:10px;padding:10px">
+   <div style=display:flex;align-items:center;gap:10px><div style="width:30px;height:30px;border-radius:50%;background:#39ff14;color:#050a04;display:grid;place-items:center;font-weight:900">O</div><div><b>ONLY</b><div style=font-size:10px;color:#39ff14>👑 Administrador</div></div></div>
+  </div>
+ </aside>
+ <main>
+  <div style="display:flex;justify-content:space-between;margin-bottom:18px">
+   <div><h3>Bem-vindo(a), <b style=color:#39ff14>ONLY</b></h3><small style=color:#8fdf9e>Gerenciando todo o sistema com eficiência e segurança.</small></div>
+   <div style=display:flex;gap:10px><input placeholder="🔍 Buscar..." style="padding:8px 12px;background:#0f180c;border:1px solid #1a2e12;border-radius:8px;color:#fff;outline:none">🔔 3 🛡️ ➡️</div>
+  </div>
+  <div class=cards id=cards></div>
+  <div class=linha>
+   <div class=grafico><h4>📈 ATIVIDADE · Últimos 7 dias</h4><canvas id=g></canvas></div>
+   <div class=grafico><h4>🟢 STATUS DOS BOTS</h4><div id=statusbots></div></div>
+  </div>
+  <div class=tabela><h4>📋 LOGS RECENTES</h4><div id=logbox></div></div>
+ </main>
+</div>
+<script>
+let G,IO=new WebSocket((location.protocol==='https:'?'wss':'ws')+'://'+location.host);
+IO.onmessage=e=>atualiza(JSON.parse(e.data));
+async function puxa(){atualiza(await(await fetch('/api/dados')).json())}
+function atualiza(d){
+ cards.innerHTML=[['🤖','BOTS ATIVOS',d.bots||0,'/ 20','+20%'],['🖥️','SERVIDORES',d.servers||0,'/ 500','+15%'],['👥','USUÁRIOS',d.users||0,'/ 5000','+18%'],['⚡','UPTIME GERAL','99.9%','','Sistema estável']].map(([ic,tit,v,mx,p])=>`<div class=card><span class=icone>${ic}</span><h5>${tit}</h5><h1>${v} <small style=color:#8fdf9e;font-size:14px;font-weight:400>${mx}</small></h1><div class=sub>${p} desde ontem</div></div>`).join('');
+ statusbots.innerHTML='<div style="display:grid;gap:8px;margin-top:10px">'+(d.lista_bots||[]).map(b=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#070d05;border-radius:8px"><div><span class="status-dot ${b.on?'':'off'}"></span><b>${b.nome}</b> <small style=color:#8fdf9e>${b.ping}ms</small></div><div><button class="bot ${b.on?'btn-off':'btn-on'}" onclick=acao("${b.arq}","${b.on?'stop':'start'}")>${b.on?'⏸️ PARAR':'▶️ LIGAR'}</button> <button class="bot btn-rst" onclick=acao("${b.arq}","restart")>🔄</button></div></div>`).join('')+'</div>';
+ if(!G)G=new Chart(g,{type:'line',data:{labels:d.dias||[],datasets:[{label:'atividade',data:d.valores||[],borderColor:'#39ff14',background:'#39ff1422',fill:true,tension:.4,pointRadius:0}]},options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'#ffffff08'}},y:{grid:{color:'#ffffff08'}}}});
+ logbox.innerHTML=(d.logs||[]).map(l=>`<div class="logline log_${l.tipo||'ok'}">${l.txt}</div>`).join('')||'<small style=color:#8fdf9e>sem logs</small>';
+}
+async function acao(a,b){await fetch('/api/bots/'+b,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({arq:a})});puxa()}
+document.querySelectorAll('.menuitem').forEach(m=>m.onclick=()=>{document.querySelectorAll('.menuitem').forEach(x=>x.classList.remove('ativo'));m.classList.add('ativo')})
+puxa();setInterval(puxa,4000);
+fetch('/api/auth/eu').then(r=>{if(!r.ok)location.href='/login.html'})
+</script></body></html>
